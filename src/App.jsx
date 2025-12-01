@@ -30,12 +30,6 @@ export default function App() {
     textareaRef.current.focus();
   };
 
-  const handleKeyDown = () => {
-    if (!gameActive) {
-      startGame();
-    }
-  };
-
   useEffect(() => {
     if (!gameActive || !userInput) return;
 
@@ -59,63 +53,53 @@ export default function App() {
   }, [timeLeft, gameActive]);
 
   const bgColors = {
-    "<30": "#ff4d4d", 
-    30: "#ff6666",
-    35: "#ff7f66",
-    40: "#ff9966",
-    45: "#ffb366",
-    50: "#ffcc66",
-    55: "#ffe066",
-    60: "#ffff66",
-    65: "#e6ff66",
-    70: "#ccff66",
-    75: "#b3ff66",
-    80: "#99ff66",
-    85: "#80ff66",
-    90: "#66ff66",
-    ">90": "#33ff33", 
+    30: "#f06292",     
+    40: "#ff8a65",     
+    50: "#ffb74d",  
+    60: "#fff176",        
+    70: "#aed581",   
+    80: "#3dc1b4ff",   
+    90: "#76d2f1ff",      
   };
-
+  
   const getBackgroundColor = (wpm) => {
-    if (wpm < 30) return bgColors["<30"];
-    if (wpm > 90) return bgColors[">90"];
+    if (wpm < 30) return bgColors[30];
+    if (wpm >= 90) return bgColors[90];
 
-    const step = Math.floor(wpm / 5) * 5;
-    return bgColors[step] || "#ffffff"; 
+    if (wpm < 40) return bgColors[30];
+    if (wpm < 50) return bgColors[40];
+    if (wpm < 60) return bgColors[50];
+    if (wpm < 70) return bgColors[60];
+    if (wpm < 80) return bgColors[70];
+    if (wpm < 90) return bgColors[80];
   };
 
   const speedLegend = [
-    { color: bgColors["<30"], label: "<30 WPM" },
-    { color: bgColors[30], label: "30 WPM" },
-    { color: bgColors[35], label: "35 WPM" },
+    { color: bgColors[30], label: "<30 WPM" },
     { color: bgColors[40], label: "40 WPM" },
-    { color: bgColors[45], label: "45 WPM" },
     { color: bgColors[50], label: "50 WPM" },
-    { color: bgColors[55], label: "55 WPM" },
     { color: bgColors[60], label: "60 WPM" },
-    { color: bgColors[65], label: "65 WPM" },
     { color: bgColors[70], label: "70 WPM" },
-    { color: bgColors[75], label: "75 WPM" },
     { color: bgColors[80], label: "80 WPM" },
-    { color: bgColors[85], label: "85 WPM" },
-    { color: bgColors[90], label: "90 WPM" },
-    { color: bgColors[">90"], label: ">90 WPM" },
+    { color: bgColors[90], label: ">90 WPM" },
   ];
 
   return (
     <div
-      className="h-screen w-screen flex flex-col items-center justify-between p-4"
+      className="h-screen w-screen flex flex-col items-center justify-between"
       style={{ backgroundColor: getBackgroundColor(typingSpeed) }}
-      onKeyDown={handleKeyDown}
     >
-      <div className="flex flex-col md:flex-row flex-wrap items-start">
+      <div className="flex flex-wrap justify-center gap-2 mb-4 w-full ">
         {speedLegend.map((item, idx) => (
-          <div key={idx} className="flex items-center mb-1">
+          <div
+            key={idx}
+            className="flex items-center space-x-1 px-1 py-0.5 rounded-md text-xs"
+          >
             <div
               style={{ backgroundColor: item.color }}
-              className="w-6 h-6 border border-black mr-2"
+              className="w-4 h-4 rounded-sm border border-black"
             ></div>
-            <span>{item.label}</span>
+            <span className="whitespace-nowrap">{item.label}</span>
           </div>
         ))}
       </div>
@@ -142,24 +126,33 @@ export default function App() {
         ref={textareaRef}
         value={userInput}
         onChange={(e) => setUserInput(e.target.value)}
-        placeholder={gameActive ? "Start typing..." : "Press any key to start"}
+        placeholder={gameActive ? "Start typing..." : "Click start to begin"}
         disabled={timeLeft <= 0}
         rows={5}
         cols={60}
         className="w-full max-w-4xl p-3 border rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
       />
 
-      <div className="flex flex-col space-y-2 items-center">
-        <p>Speed: {typingSpeed.toFixed(0)} WPM</p>
-        <p>Time Left: {timeLeft} sec</p>
+      <div className="w-full flex justify-center">
+        <div className="flex items-center gap-4 px-3 py-1 w-full rounded-md bg-white/40 border border-black/20 text-sm">
+          <button
+            onClick={startGame}
+            className="hover:scale-110 transition"
+          >
+            {gameActive ? "[ Restart ]" : "[ Start ]"}
+          </button>
 
-        <button
-          onClick={startGame}
-          className="px-2 m-2 bg-white border border-black rounded"
-        >
-          Restart
-        </button>
+          <p className="whitespace-nowrap">
+            Speed: {typingSpeed.toFixed(0)} WPM
+          </p>
+
+          <p className="whitespace-nowrap">
+            Time Left: {timeLeft} sec
+          </p>
+        </div>
       </div>
+
+
     </div>
   );
 }
