@@ -5,9 +5,12 @@ export default function App() {
   const [text, setText] = useState(""); 
   const [userInput, setUserInput] = useState("");
   const [startTime, setStartTime] = useState(null);
-  const [typingSpeed, setTypingSpeed] = useState(0); 
   const [timeLeft, setTimeLeft] = useState(60); 
+  const [typingSpeed, setTypingSpeed] = useState(0); 
+  const [finalSpeed, setFinalSpeed] = useState(0);
+  const [finalAccuracy, setFinalAccuracy] = useState(100);
   const [gameActive, setGameActive] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const generateParagraph = () => {
     let paragraph = "";
@@ -25,6 +28,7 @@ export default function App() {
     setTypingSpeed(0);
     setTimeLeft(60);
     setGameActive(true);
+    setShowModal(false);
   };
 
   const accuracy =
@@ -52,7 +56,21 @@ export default function App() {
   useEffect(() => {
     if (!gameActive) return;
     if (timeLeft <= 0) {
+      setFinalSpeed(typingSpeed);
+        const finalAcc =
+          userInput.length === 0
+            ? 100
+            : Math.round(
+                (userInput.split("").filter((char, idx) => char === text[idx])
+                  .length /
+                  userInput.length) *
+                  100
+            );
+      setFinalAccuracy(finalAcc);
       setGameActive(false);
+      setShowModal(true);
+      setText("");      
+      setUserInput("");
       return;
     }
     const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
@@ -165,7 +183,7 @@ export default function App() {
             onClick={startGame}
             className="hover:scale-110 transition"
           >
-            {gameActive ? "[ Restart ]" : "[ Start ]"}
+            [ Start ]
           </button>
           <p className="whitespace-nowrap">
             Speed: {typingSpeed.toFixed(0)} WPM
@@ -178,6 +196,27 @@ export default function App() {
           </p>
         </div>
       </div>
+
+      {showModal && (
+        <div
+          className="fixed inset-0 bg-black/40 flex items-center justify-center"
+          onClick={() => setShowModal(false)} 
+        >
+          <div
+            className="bg-white p-8 rounded-lg text-center"
+            onClick={(e) => e.stopPropagation()} 
+          >
+            <div className="mt-2 space-y-2">
+              <h2 className="text-xl">Typing Test Complete!</h2>
+              <p>Your Speed: {finalSpeed.toFixed(0)} WPM</p>
+              <p>Accuracy: {finalAccuracy}%</p>
+              <p className="relative -bottom-4 text-xs opacity-50">
+                Click anywhere outside this box to close
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
