@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import sentences from "./sentences";
 
 export default function App() {
   const [text, setText] = useState(""); 
@@ -12,17 +11,25 @@ export default function App() {
   const [gameActive, setGameActive] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  const generateParagraph = () => {
-    let paragraph = "";
-    while (paragraph.length < 200) {
-      const random = sentences[Math.floor(Math.random() * sentences.length)];
-      paragraph += random + " ";
+  let usedFacts = new Set(); 
+  const generateParagraph = async () => {
+    try {
+      const res = await fetch("https://catfact.ninja/facts?limit=50"); 
+      const data = await res.json();
+      const newFacts = data.data.filter(item => !usedFacts.has(item.fact));
+      const selectedFacts = newFacts.slice(0, 10);
+      selectedFacts.forEach(fact => usedFacts.add(fact.fact));
+      const shuffled = selectedFacts.sort(() => Math.random() - 0.5);
+      return shuffled.map(item => item.fact).join(" ");
+    } catch (error) {
+      console.error("Failed to fetch cat facts:", error);
+      return "Cats are amazing pets with many interesting traits.";
     }
-    return paragraph.trim();
   };
 
-  const startGame = () => {
-    setText(generateParagraph());
+  const startGame = async () => {
+    const newText = await generateParagraph();
+    setText(newText);
     setUserInput("");
     setStartTime(Date.now());
     setTypingSpeed(0);
@@ -48,7 +55,7 @@ export default function App() {
     const wpm = userInput.length / 5 / elapsedMinutes;
     setTypingSpeed(wpm);
     if (userInput.length >= text.length - 1) {
-      setText((prev) => prev + " " + generateParagraph());
+    generateParagraph().then(newFacts => setText(prev => prev + " " + newFacts));
     }
   }, [userInput, gameActive, startTime, text]);
 
