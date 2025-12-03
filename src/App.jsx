@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { wutheringHeights } from "./wutheringHeights";
 
 export default function App() {
   const [text, setText] = useState(""); 
@@ -11,20 +12,20 @@ export default function App() {
   const [gameActive, setGameActive] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  let usedFacts = new Set(); 
-  const generateParagraph = async () => {
-    try {
-      const res = await fetch("https://catfact.ninja/facts?limit=50"); 
-      const data = await res.json();
-      const newFacts = data.data.filter(item => !usedFacts.has(item.fact));
-      const selectedFacts = newFacts.slice(0, 10);
-      selectedFacts.forEach(fact => usedFacts.add(fact.fact));
-      const shuffled = selectedFacts.sort(() => Math.random() - 0.5);
-      return shuffled.map(item => item.fact).join(" ");
-    } catch (error) {
-      console.error("Failed to fetch cat facts:", error);
-      return "Cats are amazing pets with many interesting traits.";
+  let usedSentences = new Set();
+
+  const generateParagraph = () => {
+    const chapters = Object.keys(wutheringHeights);
+    const chapter = chapters[Math.floor(Math.random() * chapters.length)];
+    const sentences = wutheringHeights[chapter];
+    const newSentences = sentences.filter(s => !usedSentences.has(s));
+    if (newSentences.length === 0) {
+      usedSentences.clear();
+      return generateParagraph();
     }
+    const selected = newSentences.slice(0, 10);
+    selected.forEach(s => usedSentences.add(s));
+    return selected.join(" ");
   };
 
   const startGame = async () => {
