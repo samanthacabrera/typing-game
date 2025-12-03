@@ -1,8 +1,22 @@
+### WPM Typing Test
 
-A minimal and fast starter template for building modern web apps using [Vite](https://vitejs.dev/), [React](https://reactjs.org/), and [Tailwind CSS](https://tailwindcss.com/).
+A fast and minimal typing test featuring:
 
-- Vite 4.x bundler
-- React 18 support
-- Tailwind CSS v3 
+- Live WPM indicator
+- Accuracy tracking
+- Wuthering Heights text generator
 
+---
 
+Click the link below to use the live version:
+
+[Try the Typing Test](https://samanthacabrera.github.io/typing-test/)
+
+or run locally:
+
+```bash
+git clone https://github.com/samanthacabrera/typing-test.git
+cd typing-test
+npm install
+npm run dev
+```
