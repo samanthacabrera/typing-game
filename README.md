@@ -8,9 +8,9 @@ A fast and minimal typing test featuring:
 
 ---
 
-Click the link below to use the live version:
+Click the link below to try the live version:
 
-[Try the Typing Test](https://samanthacabrera.github.io/typing-test/)
+[Typing Test](https://samanthacabrera.github.io/typing-test/)
 
 or run locally:
 

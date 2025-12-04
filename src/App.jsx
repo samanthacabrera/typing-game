@@ -107,15 +107,15 @@ export default function App() {
 
   // WPM to bg color mapping
   const bgColors = {
-    30: "#f06292",     
-    40: "#ff8a65",     
-    50: "#ffb74d",  
-    60: "#fff176",        
-    70: "#aed581",   
-    80: "#3dc1b4ff",   
-    90: "#76d2f1ff",      
+    30: "#4f7ecf",  
+    40: "#5f8fe0",  
+    50: "#7ab0f5", 
+    60: "#9cc9ff",  
+    70: "#b7d9ff", 
+    80: "#cfe6ff",  
+    90: "#e6f2ff",  
   };
-  
+
   const getBackgroundColor = (wpm) => {
     if (wpm < 30) return bgColors[30];
     if (wpm < 50) return bgColors[40];
@@ -141,13 +141,13 @@ export default function App() {
       className="h-screen w-screen flex flex-col items-center"
       style={{ backgroundColor: getBackgroundColor(typingSpeed) }}
     >
-      <header className="flex justify-between w-screen p-1 bg-white/30 text-sm">
-        <h1 className="">WPM Typing Test</h1>
+      <header className="flex justify-between w-screen p-1 bg-white/30 text-lg">
+        <h1 className="tracking-wide font-bold">WPM Typing Test</h1>
         <div className="flex flex-wrap justify-center gap-2">
           {speedLegend.map((item, idx) => (
             <div
               key={idx}
-              className="flex items-center space-x-1 px-1 py-0.5 rounded-md text-xs"
+              className="flex items-center space-x-1 px-1 py-0.5"
             >
               <div
                 style={{ backgroundColor: item.color }}
@@ -161,7 +161,7 @@ export default function App() {
 
       {!testActive && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <p className="opacity-30">
+          <p className="text-lg text-white">
             Press [ Start ] to begin
           </p>
         </div>
@@ -192,12 +192,12 @@ export default function App() {
       </div>
 
       <div className="fixed bottom-0 w-full flex justify-center">
-        <div className="flex items-center space-x-4 p-1 w-full bg-white/30 text-sm">
+        <div className="flex items-center space-x-4 p-1 w-full bg-white/30 text-lg">
           <button
             onClick={startTest}
-            className="hover:scale-110 transition"
+            className="rounded hover:bg-white/50 hover:text-black transition"
           >
-            [ Start ]
+           [ Start ]
           </button>
           <p className="whitespace-nowrap">
             Speed: {typingSpeed.toFixed(0)} WPM
@@ -224,7 +224,7 @@ export default function App() {
               <h2 className="text-xl">Typing Test Complete!</h2>
               <p>Your Speed: {finalSpeed.toFixed(0)} WPM</p>
               <p>Accuracy: {finalAccuracy}%</p>
-              <p className="relative -bottom-4 text-xs opacity-50">
+              <p className="relative -bottom-4 opacity-70">
                 Click anywhere outside this box to close
               </p>
             </div>
