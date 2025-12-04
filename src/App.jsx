@@ -11,6 +11,7 @@ export default function App() {
   const [finalAccuracy, setFinalAccuracy] = useState(100);
   const [testActive, setTestActive] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [bgPalette, setBgPalette] = useState("blue");
 
   let usedSentences = new Set();
 
@@ -106,35 +107,32 @@ export default function App() {
   }, [testActive, timeLeft]);
 
   // WPM to bg color mapping
-  const bgColors = {
-    30: "#4f7ecf",  
-    40: "#5f8fe0",  
-    50: "#7ab0f5", 
-    60: "#9cc9ff",  
-    70: "#b7d9ff", 
-    80: "#cfe6ff",  
-    90: "#e6f2ff",  
+  const palettes = {
+    blue: { 30: "#4f7ecf", 40: "#5f8fe0", 50: "#7ab0f5", 60: "#9cc9ff", 70: "#b7d9ff", 80: "#cfe6ff", 90: "#e6f2ff" },
+    purple: { 30: "#5d3a7d", 40: "#754a9d", 50: "#9061c4", 60: "#ab80dc", 70: "#c8a0f0", 80: "#dec1f7", 90: "#f3e3ff" },
+    green: { 30: "#2e7d32", 40: "#388e3c", 50: "#4caf50", 60: "#81c784", 70: "#a5d6a7", 80: "#c8e6c9", 90: "#e8f5e9" },
+    orange: { 30: "#e65100", 40: "#ef6c00", 50: "#ff9800", 60: "#ffb74d", 70: "#ffc947", 80: "#ffe0b2", 90: "#fff3e0" },
+    red: { 30: "#b71c1c", 40: "#c62828", 50: "#d32f2f", 60: "#e57373", 70: "#ef9a9a", 80: "#ffcdd2", 90: "#ffebee" },
   };
 
   const getBackgroundColor = (wpm) => {
-    if (wpm < 30) return bgColors[30];
-    if (wpm < 50) return bgColors[40];
-    if (wpm < 60) return bgColors[50];
-    if (wpm < 70) return bgColors[60];
-    if (wpm < 80) return bgColors[70];
-    if (wpm < 90) return bgColors[80];
-    return bgColors[90];
+    const colors = palettes[bgPalette];
+    if (wpm < 30) return colors[30];
+    if (wpm < 50) return colors[40];
+    if (wpm < 60) return colors[50];
+    if (wpm < 70) return colors[60];
+    if (wpm < 80) return colors[70];
+    if (wpm < 90) return colors[80];
+    return colors[90];
   };
 
-  const speedLegend = [
-    { color: bgColors[30], label: "<30 WPM" },
-    { color: bgColors[40], label: "40 WPM" },
-    { color: bgColors[50], label: "50 WPM" },
-    { color: bgColors[60], label: "60 WPM" },
-    { color: bgColors[70], label: "70 WPM" },
-    { color: bgColors[80], label: "80 WPM" },
-    { color: bgColors[90], label: ">90 WPM" },
-  ];
+  const speedLegend = Object.entries(palettes[bgPalette]).map(([wpm, color]) => {
+    let label;
+    if (wpm === "30") label = "<30 WPM";
+    else if (wpm === "90") label = ">90 WPM";
+    else label = `${wpm} WPM`;
+    return { color, label };
+  });
 
   return (
     <div
@@ -195,9 +193,9 @@ export default function App() {
         <div className="flex items-center space-x-4 p-1 w-full bg-white/30 text-lg">
           <button
             onClick={startTest}
-            className="rounded hover:bg-white/50 hover:text-black transition"
+            className="rounded hover:bg-white/50 hover:text-black transition focus:ring-0 focus:outline-none"
           >
-           [ Start ]
+            {testActive ? "[ Restart ]" : "[ Start ]"}
           </button>
           <p className="whitespace-nowrap">
             Speed: {typingSpeed.toFixed(0)} WPM
@@ -208,6 +206,19 @@ export default function App() {
           <p className="whitespace-nowrap">
             Time Left: {timeLeft} sec
           </p>
+          <div className="fixed right-2 flex items-center space-x-2">
+            {Object.keys(palettes).map((key) => (
+              <button
+                key={key}
+                onClick={() => setBgPalette(key)}
+                className={`w-6 h-6 rounded-full border border-black/50 transition ${
+                  bgPalette === key ? "ring-1 ring-black/50" : ""
+                }`}
+                style={{ backgroundColor: palettes[key][60] }}
+                title={`${key.charAt(0).toUpperCase() + key.slice(1)} Palette`}
+              ></button>
+            ))}
+          </div>
         </div>
       </div>
 
